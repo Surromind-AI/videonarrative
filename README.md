@@ -1,4 +1,4 @@
-# videonarrative# videonarrative
+# videonarrative
 ## 1. test data 선 feature 추출, 후 추론 실행
 
 1. 소스코드 메인 디렉토리인 "/data/dekim/video-qa/video-qa/hcrn-videoqa-master"로 디렉토리 이동
