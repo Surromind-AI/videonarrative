@@ -59,7 +59,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /home
 아래 링크에서 다운로드
 
 ```bash
-#링크 적어주세요
+https://drive.google.com/file/d/1GQtrtgX8WsTO9mjo61qjj5xCozcvAmxe/view?usp=sharing
 ```
 
 ## 1. feature 추출 진행
