@@ -2,7 +2,7 @@
 ## 환경설정
 
 <aside>
-❗ 1. 원천 데이터(raw data)와 라벨링 데이터의 구조는 [데이터 구조]와 같다고 가정한다.
+1. 원천 데이터(raw data)와 라벨링 데이터의 구조는 [데이터 구조]와 같다고 가정한다.
 2. 모든 명령은 baseline_code 폴더 아래에서 실행한다.
 
 </aside>
@@ -88,7 +88,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /home
 ## 2. 학습 진행
 
 ```bash
-	python3 train.py --cfg configs/video_narr.yml
+python3 train.py --cfg configs/video_narr.yml
 ```
 
 ## 3. 검증 진행
