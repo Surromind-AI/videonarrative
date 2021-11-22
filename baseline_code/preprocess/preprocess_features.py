@@ -14,7 +14,7 @@ from models import resnext
 from datautils import utils
 from datautils import video_narr
 
-
+# resnet-101-kinetics.pth 파일로 resnet model build
 def build_resnet():
     if not hasattr(torchvision.models, args.model):
         raise ValueError('Invalid model "%s"' % args.model)
@@ -26,7 +26,7 @@ def build_resnet():
     model.eval()
     return model
 
-
+# renext-101-kinetics.pth 파일로 renext model build
 def build_resnext():
     model = resnext.resnet101(num_classes=400, shortcut_type='B', cardinality=32,
                               sample_size=112, sample_duration=16,
@@ -39,7 +39,7 @@ def build_resnext():
     model.eval()
     return model
 
-
+# batch 파일 돌리기
 def run_batch(cur_batch, model):
     """
     Args:
@@ -62,7 +62,7 @@ def run_batch(cur_batch, model):
 
     return feats
 
-
+# clip에서 raw feature 추출하는 함수
 def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
     """
     Args:
@@ -76,7 +76,6 @@ def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
     clips = list()
     try:
         video_data = skvideo.io.vread(path) #, verbosity=1)
-        # video_data = skvideo.io.vread(path, verbosity=1)
     except:
         print('file {} error'.format(path))
         valid = False
@@ -125,7 +124,7 @@ def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
         clips.append(new_clip)
     return clips, valid
 
-
+# h5py 패키지로 video feature 정보 h5 파일로 생성 
 def generate_h5(model, video_ids, num_clips, outfile):
     """
     Args:
@@ -159,6 +158,7 @@ def generate_h5(model, video_ids, num_clips, outfile):
             sample_text= text[9]
             print("preprocess_features sample_text: %s" % sample_text)
 
+            # video id 형태 변경(output_{알파벳}_{한글}_슷자.mp4 -> 숫자)
             if 'A' in sample_text:
                 video_id = "1"+sample_text[11:-4]
             elif 'B' in sample_text:
@@ -265,7 +265,7 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
 
-    # annotation files
+    # 데이터셋에 따른 데이터 준비, "video-narr"이 본 과제 관련 데이터 준비 
     if args.dataset == 'tgif-qa':
 
         args.annotation_file = '/home/tgif-qa-master/dataset/Total_{}_question.csv'
@@ -312,8 +312,7 @@ if __name__ == '__main__':
                     args.outfile.format(args.dataset, args.dataset, args.feature_type))
     
     elif args.dataset == 'video-narr':
-        # args.annotation_file = '/home/0812_sampledata/annotation/output.json'
-        # args.video_dir = '/home/0812_sampledata/'
+        # feature를 뽑기 위한 video path load
         video_paths = video_narr.load_video_paths(args)
         random.shuffle(video_paths)
         print("Number of unique videos: {}", format(len(video_paths)))

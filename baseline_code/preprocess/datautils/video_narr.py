@@ -21,6 +21,7 @@ def check_glove_dimension():
     print('dimension: ' + str(dim_word))
     print('key-length: ' + str(length))
 
+#preprocess_features에서 사용 -->  video path를 output.json에 확인하여 load
 def load_video_paths(args):
     ''' Load a list of (path,image_id tuples).'''
     video_paths = []
@@ -73,81 +74,7 @@ def load_video_paths(args):
 
     return video_paths
 
-
-def multi_encoding_data(args, vocab, questions, question_id, video_id, answers, answer_candidates, mode = 'train'):
-
-    #Encode all questions
-    print('Encoding data')
-    m = Mecab().morphs
-    questions_encoded = []
-    questions_len =[]
-    questions_id = question_id
-    all_answer_candidate_encoded = []
-    all_answer_candidate_lens = []
-    video_id_tbw=[]
-    correct_answers = []
-
-    for idx, question in enumerate(questions):
-        question_tokens = m(question)
-        question_encoded = utils.encode(question_tokens, vocab['question_answer_token_to_idx'], allow_unk=True)
-        questions_encoded.append(question_encoded)
-        questions_len.append(len(question_encoded))
-        questions_id.append(questions_id[idx])
-        video_id_tbw.append(video_id[idx])
-
-        # ground truth
-        answer = int(answers[idx])
-        correct_answers.append(answer)
-
-        # answer candidates
-        candidates = answer_candidates
-        candidates_encoded = []
-        candidates_len = []
-
-        for answer in candidates:
-            answer_tokens = m(answer)
-            candidate_encoded = utils.encode(answer_tokens, vocab['question_answer_token_to_idx'], allow_unk=True)
-            candidates_encoded.append(candidate_encoded)
-            candidates_len.append(len(candidate_encoded))
-        all_answer_candidate_encoded.append(candidates_encoded)
-        all_answer_candidate_lens.append(candidates_len)
-
-    # Pad encoded questions
-    max_question_length = max(len(x) for x in questions_encoded)
-    for qe in questions_encoded:
-        while len(qe) < max_question_length:
-            qe.append(vocab['question_answer_token_to_idx']['<NULL>'])
-
-    questions_encoded =  np.asarray(questions_encoded, dtype=np.int32)
-    questions_len = np.asarray(questions_len, dtype=np.int32)
-    print(questions_encoded.shape)
-
-    # Pad encoded answer candidates
-    max_answer_candidate_length = max(max(len(x) for x in candidate) for candidate in all_answer_candidate_encoded)
-    for ans_cands in all_answer_candidate_encoded:
-        for ans in ans_cands:
-            while len(ans) < max_answer_candidate_length:
-                ans.append(vocab['question_answer_token_to_idx']['<NULL>'])
-
-    all_answer_candidate_encoded = np.asarray(all_answer_candidate_encoded, dtype=np.int32)
-    all_answer_candidate_lens = np.asarray(all_answer_candidate_lens, dtype=np.int32)
-    print(all_answer_candidate_encoded.shape)
-
-    glove_matrix = None
-    print('Writing ', args.output_pt.format(args.dataset, args.dataset, mode))
-    obj = {
-        'questions': questions_encoded,
-        'questions_len': questions_len,
-        'question_id': questions_id,
-        'video_ids': np.asarray(video_id_tbw),
-        'ans_candidates': all_answer_candidate_encoded,
-        'ans_candidates_len': all_answer_candidate_lens,
-        'answers': correct_answers,
-        'glove': glove_matrix,
-    }
-    with open(args.output_pt.format(args.dataset, args.dataset, mode), 'wb') as f:
-        pickle.dump(obj,f)
-
+# split한 language data pt file로 encoding
 def multichoice_encoding_data(args, vocab, questions,question_id, video_id, answers, answer_candidates, mode = 'train'):
     #Encode all questions
     print('Encoding data')
@@ -235,84 +162,23 @@ def multichoice_encoding_data(args, vocab, questions,question_id, video_id, answ
     with open(args.output_pt.format(args.dataset, args.dataset, mode), 'wb') as f:
         pickle.dump(obj,f)
 
-def process_question_multiChoices(args):
-    print('Loading data')
-    question_id = list([29201])
-    questions = list([args.que])
-    correct_idx = list([3])
-    video = args.vid
-    answer_candidates = np.asarray(args.answers)
-    video_id = []
-    script =[]
-
-    if 'A' in video:
-        sample_text = '1' + video[9:-4]
-    elif 'B' in video:
-        sample_text = '2' + video[9:-4]
-    elif 'C' in video:
-        sample_text = '3' + video[9:-4]
-    elif 'D' in video:
-        sample_text = '4' + video[9:-4]
-    elif 'E' in video:
-        sample_text = '5' + video[9:-4]
-    elif 'F' in video:
-        sample_text = '6' + video[9:-4]
-    elif 'G' in video:
-        sample_text = '7' + video[9:-4]
-    elif 'H' in video:
-        sample_text = '8' + video[9:-4]
-    elif 'J' in video:
-        sample_text = '9' + video[9:-4]
-    elif 'K' in video:
-        sample_text = '10' + video[9:-4]
-    elif 'L' in video:
-        sample_text = '11' + video[9:-4]
-    elif 'M' in video:
-        sample_text = '12' + video[9:-4]
-    elif 'I' in video:
-        sample_text = '13' + video[9:-4]
-    video_id.append(int(sample_text))
-
-    with open(args.vocab_json.format(args.dataset, args.dataset), 'r') as f:
-        vocab = json.load(f)
-    multi_encoding_data(args, vocab, questions, question_id, video_id, correct_idx, answer_candidates, mode='test')
-
-
-
+# language data load, split, vocab 파일 생성
 def process_questions_mulchoices(args):
     print('Loading data')
     if args.mode in ["train", "val"]:
-        # json import 하도록 변경 => 현재는 동일 파일 경로 설정했으나 이후, data split 시, Train 경로로 변경 필요
-        # json_data = pd.read_json(args.annotation_file)
-        json_data = pd.read_json('{}/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/자연재해/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/치안안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/야구/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json(' {}/라벨링데이터/예능교양/건강/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json(' {}}/라벨링데이터/예능교양/다큐/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/여행/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/정보/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
+        json_data = pd.read_json('{}/train/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
 
     else:
-        # json import 하도록 변경 => 현재는 동일 파일 경로 설정했으나 이후, data split 시, Test 경로로 변경 필요.
-        # json_data = pd.read_json(args.annotation_file)
+        json_data = pd.read_json('{}/test/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
 
-        json_data = pd.read_json('{}/라벨링데이터/생활안전/사고발생/output.json'.format(args.video_dir))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/산업안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/자연재해/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/치안안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/배구/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/야구/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/건강/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/다큐/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/여행/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/정보/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/주거/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/음식/output.json'.format(args.video_dir)))
 
     # data 랜덤하게 split하기 위해서 permutation 사용.
     json_data = json_data.iloc[np.random.permutation(len(json_data))]
@@ -333,7 +199,7 @@ def process_questions_mulchoices(args):
         if exi == 1:
             script.append(init_script[idx])
 
-    # video_id
+    # video_id: video feature binary에 저장된 파일과 이름 
     for idx, video in enumerate(video_name):
         if 'A' in video:
             sample_text = '1' + video[11:-4]
@@ -407,7 +273,7 @@ def process_questions_mulchoices(args):
 
          # 11/12 script 관련 토큰 추가
         for sc in script:
-            if script is not None or script is not "NaN":
+            if script is not None or script is not "NaN" or script is not "nan":
                 for token in m(sc):
                     if token not in script_token_to_idx:
                         script_token_to_idx[token] = len(script_token_to_idx)
@@ -440,7 +306,7 @@ def process_questions_mulchoices(args):
         with open(vocab_save_directory, 'w') as file:
             json.dump(vocab, file, indent=4)
 
-
+        # train 데이터의 10%를 validation set으로 활용한다.
         split = int(0.9*len(questions))
         train_questions = questions[:split]
         train_question_id = question_id[:split]

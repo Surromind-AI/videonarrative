@@ -14,7 +14,7 @@ import model.HCRN as HCRN
 
 from config import cfg, cfg_from_file
 
-
+# Validation, Test 시, 동작하는 함수. 본 경진대회의 question_type은 'none'이다.
 def validate(cfg, model, data, device, write_preds=False):
     model.eval()
     print('validating...')
