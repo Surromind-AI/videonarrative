@@ -1,13 +1,13 @@
-# videonarrative
+# 2021 한국어 질의응답 AI 경진대회 - Baseline 코드 안내
 ## 환경설정
 
-<aside>
-❗ 1. 원천데이터와 라벨링 데이터 구조는 [데이터 구조]와 같다고 가정한다.
+<!--aside-->
+1. 원천 데이터(raw data)와 라벨링 데이터의 구조는 [데이터 구조]와 같다고 가정한다.
 2. 모든 명령은 baseline_code 폴더 아래에서 실행한다.
 
-</aside>
+<!--/aside-->
 
-# [데이터 구조]
+## [데이터 구조]
 
 ```bash
 {사용자 지정 경로}/원천데이터
@@ -59,7 +59,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /home
 아래 링크에서 다운로드
 
 ```bash
-#링크 적어주세요
+https://drive.google.com/file/d/1GQtrtgX8WsTO9mjo61qjj5xCozcvAmxe/view?usp=sharing
 ```
 
 ## 1. feature 추출 진행
@@ -88,7 +88,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /home
 ## 2. 학습 진행
 
 ```bash
-	python3 train.py --cfg configs/video_narr.yml
+python3 train.py --cfg configs/video_narr.yml
 ```
 
 ## 3. 검증 진행
