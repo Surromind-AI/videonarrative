@@ -222,7 +222,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /{사
 
 <aside>
 📌 해당 language feature 추출 진행 시,
-학습 데이터셋의 10%는 검증 데이터로 사용된다.
+학습 데이터셋의 10%는 검증 데이터로 사용되어 위의 학습 language feature 추출 명령어 진행시, train_questions.pt, val_questions.pt 2 파일이 저장된다.
 
 e.g) 학습 데이터셋 : 100개
 실제 학습 데이터셋 : 90개
@@ -230,28 +230,115 @@ e.g) 학습 데이터셋 : 100개
 
 </aside>
 
-1. video feature 추출 진행
+2) video feature 추출 진행
     
-    1) video appearance feature 추출 명령어
+    (1) video appearance feature 추출 명령어
     
     ```bash
     python3 preprocess/preprocess_features.py --gpu_id 0 --dataset video-narr --model resnet101 --video_dir {비디오경로}
     ```
     
-    2) video motion feature 추출 명령어
+    (2) video motion feature 추출 명령어
     
     ```bash
     python3 preprocess/preprocess_features.py --gpu_id 0 --dataset video-narr --model resnext101 --image_height 112 --image_width 112 --video_dir {video 경로}
     ```
     
+## 2. Data Load
 
-## 2. 학습 진행
+- vocab, question 데이터 로드
+```python
+# DataLoader.py
+print('loading vocab from %s' % (vocab_json_path))
+vocab = load_vocab(vocab_json_path)
+
+question_pt_path = str(kwargs.pop('question_pt'))
+print('loading questions from %s' % (question_pt_path))
+question_type = kwargs.pop('question_type')
+with open(question_pt_path, 'rb') as f:
+    obj = pickle.load(f)
+    questions = obj['questions']
+    questions_len = obj['questions_len']
+    video_ids = obj['video_ids']
+    q_ids = obj['question_id']
+    answers = obj['answers']
+    glove_matrix = obj['glove']
+    ans_candidates = np.zeros(5)
+    ans_candidates_len = np.zeros(5)
+    if question_type in ['action', 'transition','none']:
+        ans_candidates = obj['ans_candidates']
+        ans_candidates_len = obj['ans_candidates_len']
+```
+
+- video feature 데이터 로드
+
+```python
+# DataLoader.py
+print('loading appearance feature from %s' % (kwargs['appearance_feat']))
+with h5py.File(kwargs['appearance_feat'], 'r') as app_features_file:
+    app_video_ids = app_features_file['ids'][()]
+app_feat_id_to_index = {str(id): i for i, id in enumerate(app_video_ids)}
+print('loading motion feature from %s' % (kwargs['motion_feat']))
+with h5py.File(kwargs['motion_feat'], 'r') as motion_features_file:
+    motion_video_ids = motion_features_file['ids'][()]
+motion_feat_id_to_index = {str(id): i for i, id in enumerate(motion_video_ids)}
+self.app_feature_h5 = kwargs.pop('appearance_feat')
+self.motion_feature_h5 = kwargs.pop('motion_feat')
+```
+
+## 3. 학습 진행
+
+- 학습 데이터 Load
+```python
+# train.py
+train_loader = VideoQADataLoader(**train_loader_kwargs)
+logging.info("number of train instances: {}".format(len(train_loader.dataset)))
+logging.info("question type of VideoQADataLoader: {}".format(train_loader.dataset.question_type))
+```
+
+- 학습 관련 parameter 설정 yaml
+```yaml
+# configs/video_narr.yaml
+gpu_id: 0
+multi_gpus: True
+num_workers: 2
+seed: 666
+exp_name: 'expVIDEO-NARR'
+
+train:
+  lr: 0.0001
+  batch_size: 32
+  restore: False
+  max_epochs: 25
+  word_dim: 100 #300
+  module_dim: 512
+  glove: True
+  k_max_frame_level: 16
+  k_max_clip_level: 8
+  spl_resolution: 1
+
+val:
+  flag: True
+
+test:
+  test_num: 0
+  write_preds: True
+
+dataset:
+  name: 'video-narr'
+  question_type: 'none'
+  data_dir: 'data/video-narr'
+  save_dir: 'results/'
+```
+
+- 학습 진행 명령어
+→ 1 epoch 마다 10% 데이터로 학습 모델 검증도 진행됨.
 
 ```bash
 	python3 train.py --cfg configs/video_narr.yml
 ```
 
-## 3. 검증 진행
+## 4. 검증 진행
 
 ```bash
 python3 validate.py --cfg configs/video_narr.yml
