@@ -82,7 +82,7 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /{사
 
 - [glove.korean.pkl](https://drive.google.com/file/d/1rl3BiT7OcOzakPEp3JGmeEZBSAaM2B4Y/view?usp=sharing)
 
-### renet, renext binary 파일 다운로드
+### resnet, resnext binary 파일 다운로드
 
 ```bash
 #링크 적어주세요
