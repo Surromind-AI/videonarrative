@@ -20,7 +20,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     np.random.seed(args.seed)
 
-    # dataset에 따른 질문 전처리, 본 경진대회의 경우 video-narr dataset 확인하면 됨.
+
     if args.dataset == 'tgif-qa':
         args.annotation_file = '/home/tgif-qa-master/dataset/{}_{}_question.csv' # args.annotation_file = '/ceph-g/lethao/datasets/tgif-qa/csv/{}_{}_question.csv'
         args.output_pt = 'data/tgif-qa/{}/tgif-qa_{}_{}_questions.pt'
