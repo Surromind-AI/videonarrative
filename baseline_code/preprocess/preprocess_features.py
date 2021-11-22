@@ -62,7 +62,7 @@ def run_batch(cur_batch, model):
 
     return feats
 
-
+# frame에서 clip feature 추출
 def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
     """
     Args:
@@ -76,7 +76,6 @@ def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
     clips = list()
     try:
         video_data = skvideo.io.vread(path) #, verbosity=1)
-        # video_data = skvideo.io.vread(path, verbosity=1)
     except:
         print('file {} error'.format(path))
         valid = False
@@ -125,7 +124,7 @@ def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
         clips.append(new_clip)
     return clips, valid
 
-
+# video feature 데이터를 추출하고 이를 h5 file로 생성
 def generate_h5(model, video_ids, num_clips, outfile):
     """
     Args:
@@ -152,13 +151,13 @@ def generate_h5(model, video_ids, num_clips, outfile):
         _t = {'misc': utils.Timer()}
         
         # 변경된 video id 처리
-        # for i, (video_path, video_id) in enumerate(video_ids):
         for i, video_path in enumerate(video_ids):
             print("preprocess_features video_path: %s" % video_path)
             text = video_path.split('/')
             sample_text= text[9]
             print("preprocess_features sample_text: %s" % sample_text)
-
+            
+            # 문자로 구성된 video id를 처리할 수 있도록 숫자로 변경 ( 문자 -> 숫자)
             if 'A' in sample_text:
                 video_id = "1"+sample_text[11:-4]
             elif 'B' in sample_text:
@@ -265,7 +264,7 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
 
-    # annotation files
+    # annotation files - 본 경진대회는 video-narr dataset 사용.
     if args.dataset == 'tgif-qa':
 
         args.annotation_file = '/home/tgif-qa-master/dataset/Total_{}_question.csv'
@@ -312,8 +311,6 @@ if __name__ == '__main__':
                     args.outfile.format(args.dataset, args.dataset, args.feature_type))
     
     elif args.dataset == 'video-narr':
-        # args.annotation_file = '/home/0812_sampledata/annotation/output.json'
-        # args.video_dir = '/home/0812_sampledata/'
         video_paths = video_narr.load_video_paths(args)
         random.shuffle(video_paths)
         print("Number of unique videos: {}", format(len(video_paths)))

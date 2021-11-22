@@ -28,7 +28,7 @@ from utils import todevice
 
 from config import cfg, cfg_from_file
 
-
+# 학습 진행 함수
 def train(cfg):
     logging.info("Create train_loader and val_loader.........")
     train_loader_kwargs = {
@@ -160,30 +160,12 @@ def train(cfg):
                 batch_mse_sum += batch_mse.sum().item()
                 count += answers.size(0)
                 avg_mse = batch_mse_sum / count
-                # sys.stdout.write(
-                #     "\rProgress = {progress}   ce_loss = {ce_loss}   avg_loss = {avg_loss}    train_mse = {train_mse}    avg_mse = {avg_mse}    exp: {exp_name}".format(
-                #         progress=colored("{:.3f}".format(progress), "green", attrs=['bold']),
-                #         ce_loss=colored("{:.4f}".format(loss.item()), "blue", attrs=['bold']),
-                #         avg_loss=colored("{:.4f}".format(avg_loss), "red", attrs=['bold']),
-                #         train_mse=colored("{:.4f}".format(batch_avg_mse), "blue",
-                #                           attrs=['bold']),
-                #         avg_mse=colored("{:.4f}".format(avg_mse), "red", attrs=['bold']),
-                #         exp_name=cfg.exp_name))
-                #sys.stdout.flush()
+
             else:
                 total_acc += aggreeings.sum().item()
                 count += answers.size(0)
                 train_accuracy = total_acc / count
-                # sys.stdout.write(
-                #     "\rProgress = {progress}   ce_loss = {ce_loss}   avg_loss = {avg_loss}    train_acc = {train_acc}    avg_acc = {avg_acc}    exp: {exp_name}".format(
-                #         progress=colored("{:.3f}".format(progress), "green", attrs=['bold']),
-                #         ce_loss=colored("{:.4f}".format(loss.item()), "blue", attrs=['bold']),
-                #         avg_loss=colored("{:.4f}".format(avg_loss), "red", attrs=['bold']),
-                #         train_acc=colored("{:.4f}".format(aggreeings.float().mean().cpu().numpy()), "blue",
-                #                           attrs=['bold']),
-                #         avg_acc=colored("{:.4f}".format(train_accuracy), "red", attrs=['bold']),
-                #         exp_name=cfg.exp_name))
-                #sys.stdout.flush()
+
         sys.stdout.write("\n")
         if cfg.dataset.question_type == 'count':
             if (epoch + 1) % 5 == 0:
@@ -310,6 +292,7 @@ def main():
 
         cfg.dataset.appearance_feat = os.path.join(cfg.dataset.data_dir, cfg.dataset.appearance_feat.format(cfg.dataset.name, cfg.dataset.question_type))
         cfg.dataset.motion_feat = os.path.join(cfg.dataset.data_dir, cfg.dataset.motion_feat.format(cfg.dataset.name, cfg.dataset.question_type))
+    # 본 경진대회 데이터셋은 아래 else문에서 동작
     else:
         cfg.dataset.question_type = 'none'
         cfg.dataset.appearance_feat = '{}_appearance_feat.h5'

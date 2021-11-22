@@ -14,7 +14,7 @@ import model.HCRN as HCRN
 
 from config import cfg, cfg_from_file
 
-
+# 검증 및 추론 함수
 def validate(cfg, model, data, device, write_preds=False):
     model.eval()
     print('validating...')

@@ -282,37 +282,18 @@ def process_question_multiChoices(args):
 def process_questions_mulchoices(args):
     print('Loading data')
     if args.mode in ["train", "val"]:
-        # json import 하도록 변경 => 현재는 동일 파일 경로 설정했으나 이후, data split 시, Train 경로로 변경 필요
-        # json_data = pd.read_json(args.annotation_file)
-        json_data = pd.read_json('{}/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/자연재해/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/치안안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/야구/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json(' {}/라벨링데이터/예능교양/건강/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json(' {}}/라벨링데이터/예능교양/다큐/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/여행/output.json'.format(args.video_dir)))
-        # json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/정보/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
+        json_data = pd.read_json('{}/train/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/train/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
 
     else:
-        # json import 하도록 변경 => 현재는 동일 파일 경로 설정했으나 이후, data split 시, Test 경로로 변경 필요.
-        # json_data = pd.read_json(args.annotation_file)
-
-        json_data = pd.read_json('{}/라벨링데이터/생활안전/사고발생/output.json'.format(args.video_dir))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/산업안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/자연재해/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/생활안전/치안안전/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/배구/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/스포츠/야구/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/건강/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/다큐/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/여행/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/정보/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/주거/output.json'.format(args.video_dir)))
-        json_data=json_data.append(pd.read_json('{}/라벨링데이터/예능교양/음식/output.json'.format(args.video_dir)))
+        json_data = pd.read_json('{}/test/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/생활안전/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/스포츠/대본X/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/예능교양/대본O/output.json'.format(args.video_dir)))
+        json_data=json_data.append(pd.read_json('{}/test/라벨링데이터/예능교양/대본X/output.json'.format(args.video_dir)))
 
     # data 랜덤하게 split하기 위해서 permutation 사용.
     json_data = json_data.iloc[np.random.permutation(len(json_data))]
@@ -326,7 +307,7 @@ def process_questions_mulchoices(args):
     video_id = []
     script=[]
 
-    # 11/12 script 관련 내용 추가
+    # script 정보 load
     init_script = list(json_data['script'])
     script_exi = list(json_data['script_exi'])
     for idx, exi in enumerate(script_exi):
@@ -376,10 +357,9 @@ def process_questions_mulchoices(args):
         question_token_to_idx = {'<NULL>':1, '<UNK>':1} # questions에 대한 token 저장할 dictionary
         summ_token_to_idx = {'<NULL>':1, '<UNK>':1} # sum에 대한 token 저장할 dictionary
         question_answer_token_to_idx = {'<NULL>':0 , '<UNK>': 1} # question, answer, sum에 대한 token 저장할 dictionary
-
-         # 11/12 script 내용 관련 추가
         script_token_to_idx = {'<NULL>':1, '<UNK>':1} # script에 대한 token 저장할 dictionary
 
+        # 정답 후보에 대한 tokenize
         for candidates in answer_candidates:
             for answer in candidates:
                 for token in m(answer):
@@ -389,23 +369,23 @@ def process_questions_mulchoices(args):
                         question_answer_token_to_idx[token] = len(question_answer_token_to_idx)
         print('Get answer_token_to_idx, num %d' % len(answer_token_to_idx))
 
+        # 질문에 대한 tokenize
         for question in questions:
             for token in m(question):
-        #         print(token)
                 if token not in question_token_to_idx:
                     question_token_to_idx[token] = len(answer_token_to_idx)
                 if token not in question_answer_token_to_idx:
                     question_answer_token_to_idx[token] = len(question_answer_token_to_idx)
 
+        # 요약문에 대한 tokenize
         for summ in summary:
             for token in m(summ):
                 if token not in summ_token_to_idx:
                     summ_token_to_idx[token] = len(summ_token_to_idx)
                 if token not in question_answer_token_to_idx:
-                    question_answer_token_to_idx[token] = len(question_answer_token_to_idx)
-        #print(question_answer_token_to_idx)
-
-         # 11/12 script 관련 토큰 추가
+                    question_answer_token_to_idx[token] = len(question_answer_token_to_idx)                  
+        
+        # 대본에 대한 tokenize
         for sc in script:
             if script is not None or script is not "NaN":
                 for token in m(sc):
@@ -426,6 +406,7 @@ def process_questions_mulchoices(args):
         print('Get script_token_to_idx')
         print(len(script_token_to_idx))
 
+        # vocab 생성
         vocab = {
         'question_token_to_idx': question_token_to_idx,
         'answer_token_to_idx': answer_token_to_idx,

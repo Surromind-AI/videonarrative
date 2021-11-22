@@ -20,7 +20,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     np.random.seed(args.seed)
 
-
+    # 본 경진대회는 "video-narr" 데이터셋 사용
     if args.dataset == 'tgif-qa':
         args.annotation_file = '/home/tgif-qa-master/dataset/{}_{}_question.csv' # args.annotation_file = '/ceph-g/lethao/datasets/tgif-qa/csv/{}_{}_question.csv'
         args.output_pt = 'data/tgif-qa/{}/tgif-qa_{}_{}_questions.pt'
@@ -46,7 +46,6 @@ if __name__ == '__main__':
             os.makedirs('data/{}'.format(args.dataset))
         msvd_qa.process_questions(args)
     elif args.dataset == 'video-narr':
-        # args.annotation_file = '/home/0812_sampledata/annotation/output.json'
         args.output_pt = 'data/{}/{}_{}_questions.pt'
         args.vocab_json = 'data/{}/{}_vocab.json'
         if not os.path.exists('data/{}'.format(args.dataset)):
