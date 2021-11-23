@@ -84,6 +84,8 @@ python3 preprocess/preprocess_questions.py --dataset video-narr --glove_pt /{사
 
 ### resnet, resnext binary 파일 다운로드
 
+아래 클릭하여 다운로드
+
 - [resnet,resnext binary](https://drive.google.com/file/d/1XBXtgE00W69y9h3NQP3w6ajT_kYnia9W/view?usp=sharing)
 
 ### 리눅스 한글 세팅
