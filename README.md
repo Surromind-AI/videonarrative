@@ -343,6 +343,7 @@ dataset:
 ```bash
 	python3 train.py --cfg configs/video_narr.yml
 ```
+📌 상기 yaml 설정 하에서 V100 GPU 2장을 사용하여 학습시 4시간 여 시간 소요
 
 ## 4. 검증 진행
 
