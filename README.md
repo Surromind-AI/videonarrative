@@ -76,6 +76,7 @@ featrue data와 vocab.json은 "baseline_code/data/video-narr/"에 업로드해�
 
 - [raw data](https://drive.google.com/file/d/1fbMB1XQvJCa2ODV0ssHYSlSXGf1fe13E/view?usp=sharing)
 - [feature data](https://drive.google.com/file/d/15dUXKfrR5eUAa2NIK_Oid6SdTcvyfzPg/view?usp=sharing) (video-narr_appearance_feat.h5, video-narr_motion_feat.h5 파일로 구성됨)
+   - 📌 [video-narr_motion_feat.h5 만 다운로드](https://drive.google.com/file/d/1smHeKz-doCJbMo9gXhc6r3CsMZYpniQf/view?usp=sharing) 	
 
 ### 한국어 Embedding (glove.korean.pkl 파일) 다운로드
 
