@@ -234,6 +234,8 @@ e.g) 학습 데이터셋 : 100개
 </aside>
 
 2) video feature 추출 진행
+
+    (note) 위에서 feature data를 받은 경우 이 과정은 skip 가능
     
     (1) video appearance feature 추출 명령어
     
