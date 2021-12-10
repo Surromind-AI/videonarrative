@@ -77,14 +77,14 @@ featrue data와 vocab.json은 "baseline_code/data/video-narr/"에 업로드해�
 - [raw data](https://drive.google.com/file/d/1fbMB1XQvJCa2ODV0ssHYSlSXGf1fe13E/view?usp=sharing)
 - [feature data](https://drive.google.com/file/d/15dUXKfrR5eUAa2NIK_Oid6SdTcvyfzPg/view?usp=sharing)
 
-### glove.korean.pkl 파일 다운로드
+### 한국어 Embedding (glove.korean.pkl 파일) 다운로드
 
 아래 클릭하여 다운로드 후, 원하시는 경로에 저장해주세요.
 이후, 해당 경로를 preprocess --glove_pt argument에 명시해주세요. 
 
 - [glove.korean.pkl](https://drive.google.com/file/d/1rl3BiT7OcOzakPEp3JGmeEZBSAaM2B4Y/view?usp=sharing)
 
-### resnet, resnext binary 파일 다운로드
+### Video Feature 추출에 필요한 모듈(resnet, resnext binary 파일) 다운로드
 
 아래 클릭하여 다운로드 후, 
 "baseline_code/data/preprocess/pretrained/"경로에 업로드해주세요.
