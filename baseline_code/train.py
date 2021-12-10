@@ -121,7 +121,10 @@ def train(cfg):
             answers = answers.cuda().squeeze()
             batch_size = answers.size(0)
             optimizer.zero_grad()
-            logits = model(*batch_input)
+            try:
+                logits = model(*batch_input)
+            except:
+                continue
             if cfg.dataset.question_type in ['action', 'transition','none']:
                 batch_agg = np.concatenate(np.tile(np.arange(batch_size).reshape([batch_size, 1]),
                                                    [1, 5])) * 5  # [0, 0, 0, 0, 0, 5, 5, 5, 5, 1, ...]
