@@ -342,8 +342,3 @@ dataset:
 python3 validate.py --cfg configs/video_narr.yml
 ```
 
-## 5. 제출파일 생성
-
-```bash
-python3 predict.py --cfg configs/video_narr.yml
-```
