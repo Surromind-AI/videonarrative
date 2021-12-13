@@ -33,6 +33,7 @@
 		ㄴ 대본O
 ```
 ### Test 데이터
+* correct_idx 값이 null로 설정되어 있음
 ```bash
 {사용자 지정 경로}/raw_data/test/원천데이터
 	ㄴ예능교양
