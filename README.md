@@ -1,4 +1,4 @@
-# 2021 한국어 질의응답 AI 경진대회 - Baseline 코드 안내
+# 2021 [한국어 질의응답 AI 경진대회](http://ai-competition.kaist.ac.kr/competitions/outline) - Baseline 코드 안내
 ## 환경설정
 
 <aside>
