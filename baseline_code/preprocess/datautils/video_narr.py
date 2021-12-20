@@ -429,11 +429,11 @@ def process_questions_mulchoices(args):
 
 
         split = int(0.9*len(questions))
-        train_questions = questions[:]
-        train_question_id = question_id[:]
-        train_answers = correct_idx[:]
-        train_video_id = video_id[:]
-        train_answer_candidates=answer_candidates[:]
+        train_questions = questions[:split]
+        train_question_id = question_id[:split]
+        train_answers = correct_idx[:split]
+        train_video_id = video_id[:split]
+        train_answer_candidates=answer_candidates[:split]
 
 
         val_questions = questions[split:]
