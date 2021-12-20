@@ -109,8 +109,8 @@ if __name__ == '__main__':
         cfg.dataset.motion_feat = os.path.join(cfg.dataset.data_dir, cfg.dataset.motion_feat.format(cfg.dataset.name, cfg.dataset.question_type))
     else:
         cfg.dataset.question_type = 'none'
-        cfg.dataset.appearance_feat = '{}_test_appearance_feat.h5'
-        cfg.dataset.motion_feat = '{}_test_motion_feat.h5'
+        cfg.dataset.appearance_feat = '{}_appearance_feat.h5'
+        cfg.dataset.motion_feat = '{}_motion_feat.h5'
         cfg.dataset.vocab_json = '{}_vocab.json'
         cfg.dataset.test_question_pt = '{}_test_questions.pt'
 
@@ -172,18 +172,11 @@ if __name__ == '__main__':
                 org_q_ids = obj['question_id']
                 ans_candidates = obj['ans_candidates']
             
-            # print('*'*50)
-            # print(org_q_ids[:10])#
-            # print(org_q_ids[int(len(org_q_ids)/2):int(len(org_q_ids)/2) + 10])#
             org_q_ids = org_q_ids[:int(len(org_q_ids)/2)]#
             org_q_ids = np.array(org_q_ids)#
             print("shape of org_q_ids: ", org_q_ids.shape)#
             print("dtype of org_q_ids: ", org_q_ids.dtype)#
-            # print(len(org_v_ids))#
-            # print(len(questions))#
-            # print(len(ans_candidates))#
-            
-            # for idx in range(len(org_q_ids)+1):
+
             for idx in range(len(org_q_ids)):
                 q_ids = list(map(lambda x:x.cpu(), q_ids))
                 dict[str(org_q_ids[idx])] = [org_v_ids[idx], questions[idx], ans_candidates[idx]]

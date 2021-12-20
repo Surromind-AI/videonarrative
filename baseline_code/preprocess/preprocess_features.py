@@ -13,7 +13,7 @@ import torchvision
 import random
 import numpy as np
 
-from modals import resnext
+from models import resnext
 from datautils import utils
 from datautils import video_narr
 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
     # output
     parser.add_argument('--out', dest='outfile',
                         help='output filepath',
-                        default="data/{}/{}_test_{}_feat.h5", type=str)
+                        default="data/{}/{}_{}_feat.h5", type=str)
     # image sizes
     parser.add_argument('--num_clips', default=8, type=int)
     parser.add_argument('--image_height', default=224, type=int)
