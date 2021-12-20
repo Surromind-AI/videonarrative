@@ -40,6 +40,7 @@ def train(cfg):
         'train_num': cfg.train.train_num,
         'batch_size': cfg.train.batch_size,
         'num_workers': cfg.num_workers,
+        'pin_memory': True,
         'shuffle': True
     }
     train_loader = VideoQADataLoader(**train_loader_kwargs)
@@ -55,6 +56,7 @@ def train(cfg):
             'val_num': cfg.val.val_num,
             'batch_size': cfg.train.batch_size,
             'num_workers': cfg.num_workers,
+            'pin_memory': True,
             'shuffle': False
         }
         val_loader = VideoQADataLoader(**val_loader_kwargs)

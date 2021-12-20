@@ -2,6 +2,9 @@ import argparse, os
 import h5py
 from scipy.misc import imresize
 import skvideo.io
+import skvideo.datasets
+bbb = skvideo.datasets.bigbuckbunny()
+
 from PIL import Image
 
 import torch
@@ -10,7 +13,7 @@ import torchvision
 import random
 import numpy as np
 
-from models import resnext
+from modals import resnext
 from datautils import utils
 from datautils import video_narr
 
@@ -74,9 +77,11 @@ def extract_clips_with_consecutive_frames(path, num_clips, num_frames_per_clip):
     """
     valid = True
     clips = list()
+
     try:
-        video_data = skvideo.io.vread(path) #, verbosity=1)
-    except:
+        video_data = skvideo.io.vread(path.strip()) #, verbosity=1)
+    except Exception as e:
+        print(e)
         print('file {} error'.format(path))
         valid = False
         if args.model == 'resnext101':
@@ -154,7 +159,9 @@ def generate_h5(model, video_ids, num_clips, outfile):
         for i, video_path in enumerate(video_ids):
             print("preprocess_features video_path: %s" % video_path)
             text = video_path.split('/')
-            sample_text= text[9]
+            
+            sample_text= text[-1]
+            
             print("preprocess_features sample_text: %s" % sample_text)
             
             # 문자로 구성된 video id를 처리할 수 있도록 숫자로 변경 ( 문자 -> 숫자)
@@ -221,7 +228,8 @@ def generate_h5(model, video_ids, num_clips, outfile):
 
             i1 = i0 + 1
             feat_dset[i0:i1] = clip_feat
-            video_ids_dset[i0:i1] = video_id
+            
+            video_ids_dset[i0:i1] = int(video_id)
             i0 = i1
             _t['misc'].toc()
             if (i % 1000 == 0):
@@ -241,7 +249,7 @@ if __name__ == '__main__':
     # output
     parser.add_argument('--out', dest='outfile',
                         help='output filepath',
-                        default="data/{}/{}_{}_feat.h5", type=str)
+                        default="data/{}/{}_test_{}_feat.h5", type=str)
     # image sizes
     parser.add_argument('--num_clips', default=8, type=int)
     parser.add_argument('--image_height', default=224, type=int)
