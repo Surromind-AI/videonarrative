@@ -40,7 +40,7 @@ __C.test.write_preds = False
 __C.test = dict(__C.test)
 # dataset options
 __C.dataset = edict()
-__C.dataset.name = 'tgif-qa' # ['tgif-qa', 'msrvtt-qa', 'msvd-qa']
+__C.dataset.name = 'video-narr' # ['tgif-qa', 'msrvtt-qa', 'msvd-qa']
 __C.dataset.question_type = 'none' #['frameqa', 'count', 'transition', 'action', 'none']
 __C.dataset.data_dir = ''
 __C.dataset.appearance_feat = '{}_{}_appearance_feat.h5'

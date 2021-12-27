@@ -8,7 +8,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', default='tgif-qa', choices=['tgif-qa', 'msrvtt-qa', 'msvd-qa','video-narr'], type=str)
     parser.add_argument('--answer_top', default=4000, type=int)
-    parser.add_argument('--glove_pt',
+    parser.add_argument('--glove_pt', default='../glove/glove.korean.pkl',
                         help='glove pickle file, should be a map whose key are words and value are word vectors represented by numpy arrays. Only needed in train mode')
     parser.add_argument('--output_pt', type=str, default='data/{}/{}_{}_questions.pt')
     parser.add_argument('--vocab_json', type=str, default='data/{}/{}_vocab.json')

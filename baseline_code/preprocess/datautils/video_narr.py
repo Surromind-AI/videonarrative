@@ -27,7 +27,8 @@ def load_video_paths(args):
 
     vid = []
 
-    with open('{}/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir),'r') as annotation_file:
+    # '{}/라벨링데이터/생활안전/대본X/output.json'.format(args.video_dir)
+    with open(os.path.join(args.video_dir,'라벨링데이터/생활안전/대본X/output.json'),'r') as annotation_file:
         instances = json.load(annotation_file)
         video_ids = []
     for instance in instances:
@@ -169,7 +170,12 @@ def multichoice_encoding_data(args, vocab, questions,question_id, video_id, answ
         video_id_tbw.append(video_id[idx])
 
         # ground truth
-        answer = int(answers[idx])
+        if mode == 'train':
+            answer = int(answers[idx])
+        elif mode == 'val':
+            answer = int(answers[idx])
+        else:
+            answer = 0
         correct_answers.append(answer)
 
         # answer candidates
@@ -373,7 +379,7 @@ def process_questions_mulchoices(args):
         for question in questions:
             for token in m(question):
                 if token not in question_token_to_idx:
-                    question_token_to_idx[token] = len(answer_token_to_idx)
+                    question_token_to_idx[token] = len(question_token_to_idx)
                 if token not in question_answer_token_to_idx:
                     question_answer_token_to_idx[token] = len(question_answer_token_to_idx)
 

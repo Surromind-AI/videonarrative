@@ -31,7 +31,10 @@ def validate(cfg, model, data, device, write_preds=False):
             else:
                 answers = answers.to(device).squeeze()
             batch_size = answers.size(0)
-            logits = model(*batch_input).to(device)
+            try:
+                logits = model(*batch_input).to(device)
+            except:
+                continue
             if cfg.dataset.question_type in ['action', 'transition','none']:
                 preds = torch.argmax(logits.view(batch_size, 5), dim=1)
                 agreeings = (preds == answers)
@@ -89,7 +92,7 @@ if __name__ == '__main__':
     # check if the data folder exists
     assert os.path.exists(cfg.dataset.data_dir)
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     cfg.dataset.save_dir = os.path.join(cfg.dataset.save_dir, cfg.exp_name)
     ckpt = os.path.join(cfg.dataset.save_dir, 'ckpt', 'model.pt')
     assert os.path.exists(ckpt)
@@ -129,6 +132,8 @@ if __name__ == '__main__':
         'num_workers': cfg.num_workers,
         'shuffle': False
     }
+    print('='*50)
+    print(test_loader_kwargs['motion_feat'])
     test_loader = VideoQADataLoader(**test_loader_kwargs)
     model_kwargs.update({'vocab': test_loader.vocab})
     model = HCRN.HCRNNetwork(**model_kwargs).to(device)
@@ -166,14 +171,16 @@ if __name__ == '__main__':
                 org_v_names = obj['video_ids']
                 org_q_ids = obj['question_id']
                 ans_candidates = obj['ans_candidates']
-
-            print("shape of org_q_ids: " + org_q_ids.shape)
-            print("dtype of org_q_ids: " + org_q_ids.dtype)
             
-            for idx in range(len(org_q_ids)+1):
+            org_q_ids = org_q_ids[:int(len(org_q_ids)/2)]#
+            org_q_ids = np.array(org_q_ids)#
+            print("shape of org_q_ids: ", org_q_ids.shape)#
+            print("dtype of org_q_ids: ", org_q_ids.dtype)#
+
+            for idx in range(len(org_q_ids)):
                 q_ids = list(map(lambda x:x.cpu(), q_ids))
-                dict[str(org_q_ids[idx])]= [org_v_ids[idx],questions[idx], ans_candidates[idx]]
-        
+                dict[str(org_q_ids[idx])] = [org_v_ids[idx], questions[idx], ans_candidates[idx]]
+            
             instances = [
                 {'video_id': video_id, 'question_id': q_id, 'question': [vocab[word.item()] for word in dict[str(q_id)][1] if word != 0],
                  'answer': answer,

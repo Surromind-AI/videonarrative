@@ -1,9 +1,8 @@
 import numpy as np
 from torch.nn import functional as F
-
+import torch
 from .utils import *
 from .CRN import CRN
-
 
 class FeatureAggregation(nn.Module):
     def __init__(self, module_dim=512):
@@ -64,8 +63,7 @@ class InputUnitLinguistic(nn.Module):
         """
         questions_embedding = self.encoder_embed(questions)  # (batch_size, seq_len, dim_word)
         embed = self.tanh(self.embedding_dropout(questions_embedding))
-        embed = nn.utils.rnn.pack_padded_sequence(embed, question_len, batch_first=True,
-                                                  enforce_sorted=False)
+        embed = nn.utils.rnn.pack_padded_sequence(embed, question_len.to("cpu"), batch_first=True, enforce_sorted=False)
 
         self.encoder.flatten_parameters()
         _, (question_embedding, _) = self.encoder(embed)
